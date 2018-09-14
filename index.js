@@ -56,7 +56,7 @@ var InfiniteData = React.createClass({
                 this.setState({
                     data: newData,
                     requestSent: false,
-                    loadedAllData: this.state.data.length >= 23
+                    loadedAllData: newData.length >= 29,
                 });
             }.bind(this),
             error: function(jqXHR, textStatus, errorThrown) {
