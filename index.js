@@ -14,9 +14,12 @@ var InfiniteData = React.createClass({
     },
 
     initFakeData: function() {
-        var data = this.createFakeData(this.state.data.length, 100);
+        var data = this.createFakeData(this.state.data.length, 12);
 
-        this.setState({data: data});
+        this.setState({
+            data: data,
+            loadedAllData: false,
+        });
     },
 
     createFakeData: function(startKey, counter) {
@@ -48,9 +51,13 @@ var InfiniteData = React.createClass({
             data: null,
             method: "GET",
             success: function(data, textStatus, jqXHR) {
-                var fakeData = this.createFakeData(this.state.data.length, 20);
+                var fakeData = this.createFakeData(this.state.data.length, 6);
                 var newData = this.state.data.concat(fakeData);
-                this.setState({data: newData, requestSent: false});
+                this.setState({
+                    data: newData,
+                    requestSent: false,
+                    loadedAllData: this.state.data.length >= 23
+                });
             }.bind(this),
             error: function(jqXHR, textStatus, errorThrown) {
                 this.setState({requestSent: false});
@@ -65,7 +72,7 @@ var InfiniteData = React.createClass({
         var clientHeight = document.documentElement.clientHeight || window.innerHeight;
         var scrolledToBottom = Math.ceil(scrollTop + clientHeight) >= scrollHeight;
 
-        if (scrolledToBottom) {
+        if (scrolledToBottom && !this.state.loadedAllData) {
             this.querySearchResult();
         }
     },
@@ -73,24 +80,24 @@ var InfiniteData = React.createClass({
     render: function() {
         return (
             <div>
-            <div className="data-container">
-            {this.state.data}
-    </div>
-        {(() => {
-            if (this.state.requestSent) {
-                return(
-                    <div className="data-loading">
-                    <i className="fa fa-refresh fa-spin"></i>
-                    </div>
-            );
-            } else {
-                return(
-                    <div className="data-loading"></div>
-            );
-            }
-        })()}
-    </div>
-    );
+                <div className="data-container">
+                    {this.state.data}
+                </div>
+                {(() => {
+                    if (this.state.requestSent) {
+                        return(
+                            <div className="data-loading">
+                            <i className="fa fa-refresh fa-spin"></i>
+                            </div>
+                    );
+                    } else {
+                        return(
+                            <div className="data-loading"></div>
+                    );
+                    }
+                })()}
+            </div>
+        );
     }
 });
 
